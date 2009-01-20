@@ -59,11 +59,13 @@ module Test
       # 
       # This method can be called with a block passed, the same as the instance method
       # 
-      def self.pending(description = "", &block)
+      def self.pending(description, &block)
         test_name = "test_#{description.gsub(/\s+/,'_')}".to_sym
         defined = instance_method(test_name) rescue false
         raise "#{test_name} is already defined in #{self}" if defined
-        define_method(test_name) { pending(description, &block) }
+        define_method(test_name) do
+          pending(description) {self.instance_eval(&block)}
+        end
       end
     end
   end
