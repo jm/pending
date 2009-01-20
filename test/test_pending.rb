@@ -51,4 +51,16 @@ class TestPending < Test::Unit::TestCase
       assert_equal "<this is fail> did not fail.", e.message
     end
   end
+  
+  def test_creates_test_method_when_called_on_self
+    TestPending.pending("this test is pending") do
+      assert true
+    end
+    
+    assert TestPending.instance_methods.include?('test_this_test_is_pending')
+    assert_raises(Test::Unit::AssertionFailedError) do
+      send(:test_this_test_is_pending)
+    end
+  end
+
 end

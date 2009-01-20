@@ -43,6 +43,28 @@ module Test
         
         print "P"
       end
+      
+      # This method will define a test method using the description as the test name
+      # ("pending function" => "test_pending_function")
+      # 
+      # Instead of doing this:
+      #
+      # def test_function_is_pending
+      #   pending "this test is pending"
+      # end
+      # 
+      # You can just do this:
+      #   
+      # pending "function is pending"
+      # 
+      # This method can be called with a block passed, the same as the instance method
+      # 
+      def self.pending(description = "", &block)
+        test_name = "test_#{description.gsub(/\s+/,'_')}".to_sym
+        defined = instance_method(test_name) rescue false
+        raise "#{test_name} is already defined in #{self}" if defined
+        define_method(test_name) { pending(description, &block) }
+      end
     end
   end
 end
