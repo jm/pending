@@ -40,8 +40,19 @@ module Test
 
           flunk("<#{description}> did not fail.") unless failed 
         end
-        
+
+        caller[0] =~ (/(.*):(.*):in `(.*)'/)
+        @@pending_cases << "#{$3} at #{$1}, line #{$2}"
         print "P"
+        
+        @@at_exit ||= begin
+          at_exit do
+            puts "\nPending Cases:"
+            @@pending_cases.each do |test_case|
+              puts test_case
+            end
+          end
+        end
       end
       
       # This method will define a test method using the description as the test name
