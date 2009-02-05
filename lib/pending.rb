@@ -1,6 +1,9 @@
 module Test
   module Unit
     class TestCase
+      @@pending_cases = []
+      @@at_exit = false
+      
       # The pending method lets you define a block of test code that is currently "pending"
       # functionality.
       #
