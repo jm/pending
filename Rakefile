@@ -1,26 +1,34 @@
-# Look in the tasks/setup.rb file for the various options that can be
-# configured in this Rakefile. The .rake files in the tasks directory
-# are where the options are used.
+require 'rake'
+require 'rake/testtask'
+require 'rake/rdoctask'
+require 'rake/gempackagetask'
 
-begin
-  require 'bones'
-  Bones.setup
-rescue LoadError
-  load 'tasks/setup.rb'
+# Test::Unit::UI::VERBOSE
+test_files_pattern = 'test/**/*_test.rb'
+src_files_pattern = 'src/**/*.rb'
+
+Rake::TestTask.new do |t|
+  src_files = Dir[src_files_pattern]
+  src_files.each { |f| puts f; require f[0...-3] }
+  t.pattern = test_files_pattern
+  t.verbose = false
 end
 
-ensure_in_path 'lib'
-require 'pending'
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |s|
+    s.name = "pending"
+    s.version = "0.1.1"
+    s.authors = ["Jeremy McAnally"]
+    s.email = "jeremymcanally@gmail.com"
+    s.summary = %q{pending lets you define a block of test code that is currently "pending" functionality, similar to RSpec's pending method}
+    s.homepage = %q{http://jeremymcanally.com}
+    s.description = %q{pending lets you define a block of test code that is currently "pending" functionality, similar to RSpec's pending method.}
+  end
+rescue LoadError
+  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
+end
 
-task :default => 'spec:run'
 
-PROJ.name = 'pending'
-PROJ.authors = 'FIXME (who is writing this software)'
-PROJ.email = 'FIXME (your e-mail)'
-PROJ.url = 'FIXME (project homepage)'
-PROJ.version = '0.1'
-PROJ.rubyforge.name = 'pending'
-
-PROJ.spec.opts << '--color'
-
-# EOF
+desc 'Default: run tests.'
+task :default => 'test'
